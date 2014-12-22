@@ -6,6 +6,11 @@ import java.util.concurrent.ExecutorService;
 import com.cloudcog.images.resize.FolderWatcher;
 import com.cloudcog.images.resize.utils.FileUtils;
 
+/**
+ * 
+ * @author mpahic
+ *
+ */
 public class WorkersFactory {
 
 	private ExecutorService threadExecutor;

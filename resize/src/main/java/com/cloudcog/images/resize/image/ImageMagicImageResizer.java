@@ -7,13 +7,18 @@ import org.im4java.core.IMOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ImageResizer {
-	static Logger log = LoggerFactory.getLogger(ImageResizer.class);
+/**
+ * 
+ * @author mpahic
+ *
+ */
+public class ImageMagicImageResizer {
+	static Logger log = LoggerFactory.getLogger(ImageMagicImageResizer.class);
 
 	File inputFile;
 	File outputFile;
 
-	public ImageResizer(File inputFile, File outputFile) throws Exception {
+	public ImageMagicImageResizer(File inputFile, File outputFile) throws Exception {
 		this.inputFile = inputFile;
 		this.outputFile = outputFile;
 	}
@@ -29,7 +34,7 @@ public class ImageResizer {
 
 		cmd.run(op);
 		
-		log.info("Image "+outputFile.getName()+" resized");
+		log.info("Image "+outputFile.getName()+" resized to " + width + "x" + height);
 		
 	}
 

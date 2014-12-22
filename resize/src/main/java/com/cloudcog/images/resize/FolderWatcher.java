@@ -16,6 +16,11 @@ import org.slf4j.LoggerFactory;
 import com.cloudcog.images.resize.worker.WorkersFactory;
 import com.sun.nio.file.ExtendedWatchEventModifier;
 
+/**
+ * 
+ * @author mpahic
+ *
+ */
 public class FolderWatcher implements Runnable {
 
 	static Logger log = LoggerFactory.getLogger(FolderWatcher.class);

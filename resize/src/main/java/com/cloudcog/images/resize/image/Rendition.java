@@ -1,5 +1,10 @@
 package com.cloudcog.images.resize.image;
 
+/**
+ * 
+ * @author mpahic
+ *
+ */
 public class Rendition {
 	
 	private Integer width;
@@ -7,8 +12,9 @@ public class Rendition {
 
 	public Rendition(String rendition) {
 		StringBuilder builder = new StringBuilder(rendition);
-		String width = builder.substring(0, builder.indexOf("x"));
-		String height = builder.substring(builder.indexOf("x") + 1);
+		int index = builder.indexOf("x");
+		String width = builder.substring(0, index);
+		String height = builder.substring(index + 1);
 
 		this.width = Integer.valueOf(width);
 		this.height = Integer.valueOf(height);

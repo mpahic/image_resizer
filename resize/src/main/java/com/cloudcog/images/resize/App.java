@@ -32,6 +32,7 @@ public class App
         th.start();
         
     	log.info("Application started and running!");
+    	th.join();
 
     }
 

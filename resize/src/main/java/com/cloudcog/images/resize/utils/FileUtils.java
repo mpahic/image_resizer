@@ -4,6 +4,11 @@ import java.io.File;
 
 import javax.activation.MimetypesFileTypeMap;
 
+/**
+ * 
+ * @author mpahic
+ *
+ */
 public class FileUtils {
 
 	private static MimetypesFileTypeMap mtftp = new MimetypesFileTypeMap();

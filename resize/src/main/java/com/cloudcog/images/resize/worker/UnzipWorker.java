@@ -15,6 +15,11 @@ import org.slf4j.LoggerFactory;
 
 import com.cloudcog.images.resize.config.Config;
 
+/**
+ * 
+ * @author mpahic
+ *
+ */
 public class UnzipWorker implements Runnable {
 
 	static Logger log = LoggerFactory.getLogger(UnzipWorker.class);

@@ -6,13 +6,23 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import org.im4java.process.ProcessStarter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.cloudcog.images.resize.image.Rendition;
 
+/**
+ * 
+ * @author mpahic
+ *
+ */
 public class Config {
+	static Logger log = LoggerFactory.getLogger(Config.class);
 	
 	private static final String CONFIG_FILENAME = "config.properties";
 	
@@ -22,6 +32,7 @@ public class Config {
 	private static final String ORIGINAL_PROCESSED_FOLDER = "processed_folder";
 	private static final String OUTPUT_FOLDER = "output_folder";
 
+	private static final String USE_IMAGE_MAGICK = "use_image_magic";
 	private static final String IMAGE_MAGICK_PATH = "image_magic_path";
 	
 	private static final Integer DEFAULT_MAX_THREADS = 8;
@@ -29,8 +40,10 @@ public class Config {
 	private static final String DEFAULT_INPUT_FOLDER = "input";
 	private static final String DEFAULT_ORIGINAL_PROCESSED_FOLDER = "processed/original";
 	private static final String DEFAULT_OUTPUT_FOLDER = "processed";
+	private static final Boolean DEFAULT_USE_IMAGE_MAGICK = false;
 	
 	private static Properties properties = new Properties();
+	private static List<Rendition> renditions;
 	private static Long lastModifiedConfig;
 
 
@@ -67,17 +80,19 @@ public class Config {
 			properties.setProperty(ORIGINAL_PROCESSED_FOLDER, DEFAULT_ORIGINAL_PROCESSED_FOLDER);
 			
 			properties.setProperty(OUTPUT_RENDITION, DEFAULT_OUTPUT_RENDITION);
+			properties.setProperty(USE_IMAGE_MAGICK, DEFAULT_USE_IMAGE_MAGICK.toString());
 	 
 			properties.store(output, null);
+			generateData();
 	 
 		} catch (IOException io) {
-			io.printStackTrace();
+			log.error(io.getMessage(), io);
 		} finally {
 			if (output != null) {
 				try {
 					output.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					log.error(e.getMessage(), e);
 				}
 			}
 		}
@@ -89,25 +104,46 @@ public class Config {
 		try {
 			input = new FileInputStream(configFile);
 			properties.load(input);
+			generateData();
 			
-			createFolder(getInputFolder());
-			createFolder(getOutputFolder());
-			createFolder(getOriginalProcessedFolder());
-
-	        if(Config.getImageMagickPath() != null) {
-	        	ProcessStarter.setGlobalSearchPath(Config.getImageMagickPath());
-	        }
-
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			log.error(ex.getMessage(), ex);
 		} finally {
 			if (input != null) {
 				try {
 					input.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					log.error(e.getMessage(), e);
 				}
 			}
+		}
+	}
+
+	private static void generateData() {
+		createFolder(getInputFolder());
+		createFolder(getOutputFolder());
+		createFolder(getOriginalProcessedFolder());
+
+		generateRenditions();
+		if(Config.getImageMagickPath() != null) {
+			ProcessStarter.setGlobalSearchPath(Config.getImageMagickPath());
+		}
+	}
+	
+	private static void generateRenditions() {
+		renditions = new ArrayList<Rendition>();
+		String renditionString = properties.getProperty(OUTPUT_RENDITION);
+		if(renditionString != null) {
+			String[] renditionsArray = renditionString.split(",");
+			for (int i = 0; i < renditionsArray.length; i++) {
+				try {
+					renditions.add(new Rendition(renditionsArray[i]));
+				} catch (Exception e) {
+					log.error(e.getMessage(), e);
+				}
+			}
+		} else {
+			renditions.add(new Rendition(DEFAULT_OUTPUT_RENDITION));
 		}
 	}
 	
@@ -153,20 +189,29 @@ public class Config {
 		}
 		return DEFAULT_OUTPUT_FOLDER;
 	}
-	
-	public static Rendition getOutputRendition() {
-		String rendition = properties.getProperty(OUTPUT_RENDITION);
-		if(rendition != null) {
-			try {
-				return new Rendition(rendition);
-			} catch (Exception e) {
-				return new Rendition(DEFAULT_OUTPUT_RENDITION);
-			}
-		}
-		return new Rendition(DEFAULT_OUTPUT_RENDITION);
+
+	public static List<Rendition> getOutputRendition() {
+		return renditions;
 	}
 
 	public static String getImageMagickPath() {
 		return properties.getProperty(IMAGE_MAGICK_PATH);
+	}
+	
+	public static Boolean getUseImageMagick() {
+		String value = properties.getProperty(USE_IMAGE_MAGICK);
+		if(value != null) {
+			try {
+				Boolean userImageMagick = Boolean.valueOf(value);
+				if(userImageMagick != null) {
+					return userImageMagick;
+				}
+				return DEFAULT_USE_IMAGE_MAGICK;
+			} catch (Exception e){
+				return DEFAULT_USE_IMAGE_MAGICK;
+			}
+		} else {
+			return DEFAULT_USE_IMAGE_MAGICK;
+		}
 	}
 }

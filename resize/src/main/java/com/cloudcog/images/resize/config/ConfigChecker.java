@@ -2,6 +2,11 @@ package com.cloudcog.images.resize.config;
 
 import java.util.TimerTask;
 
+/**
+ * 
+ * @author mpahic
+ *
+ */
 public class ConfigChecker extends TimerTask {
 
 	@Override
