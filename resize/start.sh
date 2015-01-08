@@ -4,7 +4,7 @@ DESC="Description"
 NAME=transcoder
 PIDFILE=.pid
 RUN_AS=root
-COMMAND=/usr/bin/java -- -jar transcoder.jar
+COMMAND=/usr/bin/java -- -jar resize.jar
 
 d_start() {
   if [ -e $PIDFILE ]

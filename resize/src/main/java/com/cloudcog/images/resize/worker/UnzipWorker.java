@@ -34,7 +34,6 @@ public class UnzipWorker implements Runnable {
 		workFolder = Config.getOriginalProcessedFolder();
 	}
 	
-	@Override
 	public void run() {
 		try {
 			waitForRelease();
